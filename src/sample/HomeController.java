@@ -5,11 +5,13 @@ import java.sql.Connection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Screen;
 
 import java.sql.ResultSet;
 import java.io.IOException;
@@ -22,12 +24,18 @@ public class HomeController implements Initializable
 
     @FXML
     private ComboBox<KeyValuePair> cbCustomerList;
+    @FXML
+    private TableView forecastTable;
 
+    @FXML
+    private SplitPane MainSplitPane;
 
 
     @Override
     public void initialize(final URL url, final ResourceBundle rb)
     {
+        //clear the 2 default columns that appear in TableView
+        forecastTable.getColumns().clear();
 
     }
 
@@ -36,6 +44,7 @@ public class HomeController implements Initializable
     @FXML
     private void getCustomerButton(ActionEvent event) throws IOException
     {
+        MainSplitPane.setDividerPosition(0,0.1);
 
         //get MYSQL Connection
         MySQLConnection myclass =new MySQLConnection();
@@ -81,6 +90,21 @@ public class HomeController implements Initializable
         MySQLQuery customerQuery = new MySQLQuery();
         ResultSet customerforecastresults  = customerQuery.QueryCustomerForecast(conn,id);
 
+        forecastTable.setEditable(true);
+
+        TableColumn colCustomername = new TableColumn("Customer Name");
+        TableColumn colSku = new TableColumn("Sku");
+        TableColumn colDescription = new TableColumn("Description");
+        TableColumn colForecast1 = new TableColumn("M1 forecast");
+        TableColumn colForecast2 = new TableColumn("M2 forecast");
+        TableColumn colForecast3 = new TableColumn("M3 forecast");
+        TableColumn colForecast4 = new TableColumn("M4 forecast");
+        TableColumn colForecast5 = new TableColumn("M5 forecast");
+        TableColumn colForecast6 = new TableColumn("M6 forecast");
+
+        forecastTable.getColumns()
+                .addAll(colCustomername,colSku,colDescription,colForecast1,colForecast2,colForecast3,colForecast4,colForecast5,colForecast6);
+
         try
         {
             ResultSetMetaData rsmd = customerforecastresults.getMetaData();
@@ -88,8 +112,8 @@ public class HomeController implements Initializable
               while (customerforecastresults.next())
             {
                 String customernumber = customerforecastresults.getString(1);
-                String customername = customerforecastresults.getString(2);
-                System.out.println(customernumber);
+
+
             }
 
             conn.close();
